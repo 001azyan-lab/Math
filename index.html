@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>اختبار الرياضيات التفاعلي - الدوال الأسية واللوغاريتمية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --success: #16a34a;
+      --success-bg: #f0fdf4;
+      --danger: #dc2626;
+      --danger-bg: #fef2f2;
+      --warning: #d97706;
+      --warning-bg: #fffbeb;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 20px 16px 60px;
+    }
+
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+      padding: 24px 20px;
+      background: var(--card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .progress-bar-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .nav-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .nav-dot {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .nav-dot.answered {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .nav-dot.current {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      transform: scale(1.06);
+    }
+
+    .question-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+      margin-bottom: 20px;
+    }
+
+    .q-badge {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+
+    .q-body {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+
+    .q-text {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      flex: 1;
+      min-width: 240px;
+    }
+
+    .q-image {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .q-image svg {
+      max-width: 210px;
+      height: auto;
+      display: block;
+    }
+
+    .options-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .option-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      text-align: right;
+      padding: 14px 18px;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      font-size: 1.1rem;
+      color: var(--text);
+    }
+
+    .option-btn:hover {
+      border-color: #93c5fd;
+      background: #f8fafc;
+    }
+
+    .option-btn.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      font-weight: 700;
+    }
+
+    .opt-letter {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+      direction: ltr;
+    }
+
+    .option-btn.selected .opt-letter {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .opt-content {
+      direction: ltr;
+      unicode-bidi: isolate;
+      font-size: 1.15rem;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 22px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: var(--text);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: #cbd5e1;
+    }
+
+    .btn-secondary:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-submit {
+      background: var(--success);
+      color: #fff;
+      width: 100%;
+      margin-top: 16px;
+      padding: 15px;
+      font-size: 1.1rem;
+    }
+
+    .btn-submit:hover {
+      background: #15803d;
+    }
+
+    /* Results View */
+    .results-summary {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      text-align: center;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+    }
+
+    .score-circle {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      border: 6px solid var(--primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 18px;
+    }
+
+    .score-percent {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.1;
+    }
+
+    .score-fraction {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .stat-box {
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+    }
+
+    .stat-box.correct { background: var(--success-bg); border-color: #bbf7d0; color: var(--success); }
+    .stat-box.wrong { background: var(--danger-bg); border-color: #fecaca; color: var(--danger); }
+    .stat-box.skipped { background: var(--warning-bg); border-color: #fde68a; color: var(--warning); }
+
+    .stat-num {
+      font-size: 1.5rem;
+      font-weight: 800;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.92rem;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .review-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      border-right-width: 6px;
+    }
+
+    .review-card.is-correct { border-right-color: var(--success); }
+    .review-card.is-wrong { border-right-color: var(--danger); }
+    .review-card.is-skipped { border-right-color: var(--warning); }
+
+    .review-status {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .is-correct .review-status { background: var(--success-bg); color: var(--success); }
+    .is-wrong .review-status { background: var(--danger-bg); color: var(--danger); }
+    .is-skipped .review-status { background: var(--warning-bg); color: var(--warning); }
+
+    .review-options {
+      margin-top: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .rev-opt {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1rem;
+    }
+
+    .rev-opt.right-ans {
+      background: var(--success-bg);
+      border-color: var(--success);
+      font-weight: 700;
+      color: #14532d;
+    }
+
+    .rev-opt.user-wrong {
+      background: var(--danger-bg);
+      border-color: var(--danger);
+      color: #7f1d1d;
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>اختبار الرياضيات التفاعلي</h1>
+      <p>أسئلة الاختيار من متعدد — الدوال الأسية واللوغاريتمية (21 سؤالًا)</p>
+    </header>
+
+    <!-- شاشة الاختبار -->
+    <main id="quiz-screen">
+      <div class="progress-bar-wrap">
+        <div class="progress-header">
+          <span id="progress-text">السؤال 1 من 21</span>
+          <span id="answered-count">تمت الإجابة عن: 0 من 21</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill" style="width: 4.76%;"></div>
+        </div>
+        <div class="nav-grid" id="nav-grid"></div>
+      </div>
+
+      <div class="question-card">
+        <div class="q-badge" id="q-number-badge">السؤال رقم 1</div>
+        <div class="q-body">
+          <div class="q-text" id="q-text"></div>
+          <div class="q-image hidden" id="q-image-box"></div>
+        </div>
+        <div class="options-list" id="options-list"></div>
+      </div>
+
+      <div class="controls">
+        <button class="btn btn-secondary" id="prev-btn" onclick="prevQuestion()">السؤال السابق</button>
+        <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">السؤال التالي</button>
+      </div>
+
+      <button class="btn btn-submit" onclick="confirmSubmit()">إنهاء الاختبار وتسليم الإجابات</button>
+    </main>
+
+    <!-- شاشة النتائج والمراجعة -->
+    <section id="results-screen" class="hidden">
+      <div class="results-summary">
+        <div class="score-circle">
+          <div class="score-percent" id="res-percent">0%</div>
+          <div class="score-fraction" id="res-fraction">0 من 21</div>
+        </div>
+        <h2>نتيجة الاختبار النهائية</h2>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-num" id="stat-total">21</div>
+            <div class="stat-label">إجمالي الأسئلة</div>
+          </div>
+          <div class="stat-box correct">
+            <div class="stat-num" id="stat-correct">0</div>
+            <div class="stat-label">إجابات صحيحة</div>
+          </div>
+          <div class="stat-box wrong">
+            <div class="stat-num" id="stat-wrong">0</div>
+            <div class="stat-label">إجابات خاطئة</div>
+          </div>
+          <div class="stat-box skipped">
+            <div class="stat-num" id="stat-skipped">0</div>
+            <div class="stat-label">بدون إجابة</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width: 100%; font-size: 1.1rem; padding: 14px;" onclick="restartQuiz()">
+          إعادة الاختبار (بترتيب جديد)
+        </button>
+      </div>
+
+      <div class="filter-tabs">
+        <button class="tab-btn active" onclick="filterReview('all', this)">جميع الأسئلة (21)</button>
+        <button class="tab-btn" onclick="filterReview('correct', this)">الصحيحة فقط</button>
+        <button class="tab-btn" onclick="filterReview('wrong', this)">الخاطئة فقط</button>
+        <button class="tab-btn" onclick="filterReview('skipped', this)">المتروكة بدون إجابة</button>
+      </div>
+
+      <div id="review-list"></div>
+    </section>
+  </div>
+
+  <script>
+    // الرسم البياني الدقيق للدالة f(x) = (1/2)^x المرفق بالسؤال
+    const GRAPH_SVG = `
+      <svg viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="#1e293b"/>
+          </marker>
+          <marker id="curveArrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="#7f1d1d"/>
+          </marker>
+        </defs>
+        <!-- شبكة الإحداثيات -->
+        <g stroke="#cbd5e1" stroke-width="1">
+          <line x1="20" y1="20" x2="200" y2="20"/><line x1="20" y1="45" x2="200" y2="45"/>
+          <line x1="20" y1="70" x2="200" y2="70"/><line x1="20" y1="95" x2="200" y2="95"/>
+          <line x1="20" y1="120" x2="200" y2="120"/><line x1="20" y1="145" x2="200" y2="145"/>
+          <line x1="20" y1="170" x2="200" y2="170"/>
+          <line x1="35" y1="10" x2="35" y2="185"/><line x1="60" y1="10" x2="60" y2="185"/>
+          <line x1="85" y1="10" x2="85" y2="185"/><line x1="110" y1="10" x2="110" y2="185"/>
+          <line x1="135" y1="10" x2="135" y2="185"/><line x1="160" y1="10" x2="160" y2="185"/>
+          <line x1="185" y1="10" x2="185" y2="185"/>
+        </g>
+        <!-- المحاور -->
+        <line x1="18" y1="145" x2="202" y2="145" stroke="#1e293b" stroke-width="2" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+        <line x1="110" y1="186" x2="110" y2="12" stroke="#1e293b" stroke-width="2" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+        <text x="195" y="162" font-size="14" font-style="italic" font-family="serif" fill="#0f172a">x</text>
+        <text x="95" y="20" font-size="14" font-style="italic" font-family="serif" fill="#0f172a">y</text>
+        <text x="96" y="160" font-size="13" font-style="italic" font-family="serif" fill="#0f172a">0</text>
+        <!-- منحنى f(x) = (1/2)^x -->
+        <path d="M 52 22 Q 72 95 110 120 T 185 141" fill="none" stroke="#1e1b18" stroke-width="3" marker-start="url(#curveArrow)" marker-end="url(#curveArrow)"/>
+        <text x="72" y="56" font-size="13" font-family="serif" font-weight="bold" fill="#0f172a">f(x) = (½)ˣ</text>
+      </svg>
+    `;
+
+    // قاعدة بيانات الأسئلة الـ 21 المستخرجة بدقة من الملف
+    const RAW_QUESTIONS = [
+      {
+        text: "منحنى الدالة الأسية $f(x) = \\left(\\frac{1}{2}\\right)^x$ يقطع محور $y$ في النقطة ..",
+        options: ["$(0,0)$", "$(0,1)$", "$(1,0)$", "$(1,1)$"],
+        answer: "$(0,1)$"
+      },
+      {
+        text: "مدى الدالة $f(x)$ المبينة بالشكل المجاور يساوي ..",
+        hasImage: true,
+        options: ["$\\mathbb{R}$", "$\\mathbb{R}^+$", "$\\mathbb{Z}$", "$\\mathbb{W}$"],
+        answer: "$\\mathbb{R}^+$"
+      },
+      {
+        text: "إذا كانت $9^{x+2} = 3^{x+7}$ فما قيمة $x$ ؟",
+        options: ["$2$", "$3$", "$4$", "$5$"],
+        answer: "$3$"
+      },
+      {
+        text: "ما قيمة $x$ التي تحقق المعادلة $\\frac{2}{-4^{1-x}} = -2$ ؟",
+        options: ["$2$", "$1$", "$-1$", "$-2$"],
+        answer: "$1$"
+      },
+      {
+        text: "إذا كانت $3^x \\ge 9$ فإن ..",
+        options: ["$x \\le 9$", "$x < 2$", "$x \\ge 2$", "$x > 2$"],
+        answer: "$x \\ge 2$"
+      },
+      {
+        text: "ما قيمة $x$ التي تحقق المتباينة $\\left(\\frac{1}{2}\\right)^x - \\frac{1}{8} < 0$ ؟",
+        options: ["$x < -8$", "$x < -3$", "$x > \\frac{1}{2}$", "$x > 3$"],
+        answer: "$x > 3$"
+      },
+      {
+        text: "ما قيمة $x$ التي تحقق المتباينة $(9)^{x-2} > \\left(\\frac{1}{27}\\right)^x$ ؟",
+        options: ["$x < -2$", "$x > 3$", "$x > \\frac{4}{5}$", "$x < \\frac{5}{4}$"],
+        answer: "$x > \\frac{4}{5}$"
+      },
+      {
+        text: "إذا كان $\\log_2 x = 3$ فإن $x$ تساوي ..",
+        options: ["$2$", "$3$", "$5$", "$8$"],
+        answer: "$8$"
+      },
+      {
+        text: "إذا كان $\\log_x (32) = 5$ فما قيمة $x$ ؟",
+        options: ["$1$", "$2$", "$5$", "$32$"],
+        answer: "$2$"
+      },
+      {
+        text: "الصورة الأسية المكافئة للصورة اللوغاريتمية $\\log_x 8 = 3$ هي ..",
+        options: ["$x^3 = 8$", "$3^x = 8$", "$8^3 = x$", "$x^8 = 3$"],
+        answer: "$x^3 = 8$"
+      },
+      {
+        text: "ما الصورة الأسية المكافئة للعبارة اللوغاريتمية $\\log 100 = 2$ ؟",
+        options: ["$100 = 10^2$", "$10 = 100^2$", "$100 = 2^{10}$", "$2 = 10^{100}$"],
+        answer: "$100 = 10^2$"
+      },
+      {
+        text: "منحنى الدالة اللوغاريتمية $f(x) = \\log_b x$ يقطع محور $x$ في النقطة ..",
+        options: ["$(0,0)$", "$(0,1)$", "$(1,1)$", "$(1,0)$"],
+        answer: "$(1,0)$"
+      },
+      {
+        text: "ما المقطع $y$ للدالة اللوغاريتمية $f(x) = \\log_2 (x + 1) + 3$ ؟",
+        options: ["$3$", "$2$", "$1$", "$0$"],
+        answer: "$3$"
+      },
+      {
+        text: "مجال الدالة $f(x) = \\log_2 x$ يساوي ..",
+        options: ["$\\mathbb{R}$", "$[2, \\infty)$", "$\\mathbb{R}^+$", "$\\mathbb{W}$"],
+        answer: "$\\mathbb{R}^+$"
+      },
+      {
+        text: "ما قيمة المقدار $\\log_3 13 - \\log_3 5$ ؟",
+        options: ["$\\log_5 13$", "$\\log_3 \\frac{13}{5}$", "$\\log_{13} 5$", "$\\frac{13}{5}$"],
+        answer: "$\\log_3 \\frac{13}{5}$"
+      },
+      {
+        text: "ما قيمة $\\log_{\\frac{1}{6}} \\frac{1}{216}$ ؟",
+        options: ["$1$", "$2$", "$3$", "$6$"],
+        answer: "$3$"
+      },
+      {
+        text: "قيمة العبارة $\\log_2 (\\log_2 x^{24}) - \\log_2 (\\log_2 x^3)$ تساوي ..",
+        options: ["$2$", "$3$", "$4$", "$8$"],
+        answer: "$3$"
+      },
+      {
+        text: "قيمة العبارة اللوغاريتمية $3 \\log_3 (9) - \\log_5 \\left(\\frac{1}{25}\\right)$ تساوي ..",
+        options: ["$12$", "$10$", "$8$", "$4$"],
+        answer: "$8$"
+      },
+      {
+        text: "ما قيمة $\\log_{100} 10$ ؟",
+        options: ["$1$", "$-1$", "$\\frac{1}{2}$", "$2$"],
+        answer: "$\\frac{1}{2}$"
+      },
+      {
+        text: "إذا كان $\\log_4 x \\ge 2$ فإن ..",
+        options: ["$x \\ge 2$", "$x \\ge 4$", "$x \\ge 8$", "$x \\ge 16$"],
+        answer: "$x \\ge 16$"
+      },
+      {
+        text: "إذا كانت $f(x) = \\log x$ بحيث $1 \\le x \\le 10$ فإن ..",
+        options: ["$1 \\le f(x) \\le 10$", "$0 \\le f(x) \\le 1$", "$0 \\le f(x) \\le 10$", "$1 \\le f(x) \\le 100$"],
+        answer: "$0 \\le f(x) \\le 1$"
+      }
+    ];
+
+    const LETTERS = ["A", "B", "C", "D"];
+    let quizQuestions = [];
+    let currentIndex = 0;
+    let userAnswers = [];
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function initQuiz() {
+      quizQuestions = shuffleArray(RAW_QUESTIONS).map((q, idx) => ({
+        displayNum: idx + 1,
+        text: q.text,
+        hasImage: !!q.hasImage,
+        options: shuffleArray(q.options),
+        answer: q.answer
+      }));
+      currentIndex = 0;
+      userAnswers = new Array(quizQuestions.length).fill(null);
+
+      document.getElementById("results-screen").classList.add("hidden");
+      document.getElementById("quiz-screen").classList.remove("hidden");
+      renderNavGrid();
+      renderQuestion();
+    }
+
+    function renderNavGrid() {
+      const grid = document.getElementById("nav-grid");
+      grid.innerHTML = "";
+      quizQuestions.forEach((q, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "nav-dot";
+        if (userAnswers[idx] !== null) btn.classList.add("answered");
+        if (idx === currentIndex) btn.classList.add("current");
+        btn.textContent = q.displayNum;
+        btn.title = `الانتقال إلى السؤال ${q.displayNum}`;
+        btn.onclick = () => {
+          currentIndex = idx;
+          renderQuestion();
+        };
+        grid.appendChild(btn);
+      });
+
+      const answeredCount = userAnswers.filter(a => a !== null).length;
+      document.getElementById("answered-count").textContent = `تمت الإجابة عن: ${answeredCount} من ${quizQuestions.length}`;
+    }
+
+    function renderQuestion() {
+      const q = quizQuestions[currentIndex];
+      const total = quizQuestions.length;
+
+      document.getElementById("progress-text").textContent = `السؤال ${q.displayNum} من ${total}`;
+      document.getElementById("q-number-badge").textContent = `السؤال رقم ${q.displayNum}`;
+      document.getElementById("progress-fill").style.width = `${((currentIndex + 1) / total) * 100}%`;
+
+      document.getElementById("q-text").innerHTML = q.text;
+
+      const imgBox = document.getElementById("q-image-box");
+      if (q.hasImage) {
+        imgBox.innerHTML = GRAPH_SVG;
+        imgBox.classList.remove("hidden");
+      } else {
+        imgBox.innerHTML = "";
+        imgBox.classList.add("hidden");
+      }
+
+      const optsList = document.getElementById("options-list");
+      optsList.innerHTML = "";
+
+      q.options.forEach((optText, i) => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        if (userAnswers[currentIndex] === optText) {
+          btn.classList.add("selected");
+        }
+        btn.innerHTML = `
+          <span class="opt-letter">${LETTERS[i]}</span>
+          <span class="opt-content">${optText}</span>
+        `;
+        btn.onclick = () => selectOption(optText);
+        optsList.appendChild(btn);
+      });
+
+      document.getElementById("prev-btn").disabled = currentIndex === 0;
+      document.getElementById("next-btn").disabled = currentIndex === total - 1;
+
+      renderNavGrid();
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        MathJax.typesetPromise();
+      }
+    }
+
+    function selectOption(optText) {
+      userAnswers[currentIndex] = optText;
+      renderQuestion();
+    }
+
+    function prevQuestion() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderQuestion();
+      }
+    }
+
+    function nextQuestion() {
+      if (currentIndex < quizQuestions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      }
+    }
+
+    function confirmSubmit() {
+      const unanswered = userAnswers.filter(a => a === null).length;
+      if (unanswered > 0) {
+        const ok = confirm(`تبقّى لديك ${unanswered} سؤال لم تُجب عنه بعد. هل تريد إنهاء الاختبار وتسليم الإجابات الآن؟`);
+        if (!ok) return;
+      }
+      showResults();
+    }
+
+    function showResults() {
+      let correctCount = 0;
+      let wrongCount = 0;
+      let skippedCount = 0;
+
+      quizQuestions.forEach((q, idx) => {
+        const ans = userAnswers[idx];
+        if (ans === null) {
+          skippedCount++;
+        } else if (ans === q.answer) {
+          correctCount++;
+        } else {
+          wrongCount++;
+        }
+      });
+
+      const total = quizQuestions.length;
+      const percent = Math.round((correctCount / total) * 100);
+
+      document.getElementById("res-percent").textContent = `${percent}%`;
+      document.getElementById("res-fraction").textContent = `${correctCount} من ${total}`;
+      document.getElementById("stat-total").textContent = total;
+      document.getElementById("stat-correct").textContent = correctCount;
+      document.getElementById("stat-wrong").textContent = wrongCount;
+      document.getElementById("stat-skipped").textContent = skippedCount;
+
+      document.getElementById("quiz-screen").classList.add("hidden");
+      document.getElementById("results-screen").classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      renderReview("all");
+    }
+
+    function filterReview(type, btnEl) {
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      btnEl.classList.add("active");
+      renderReview(type);
+    }
+
+    function renderReview(filterType) {
+      const list = document.getElementById("review-list");
+      list.innerHTML = "";
+
+      quizQuestions.forEach((q, idx) => {
+        const userAns = userAnswers[idx];
+        const isCorrect = userAns === q.answer;
+        const isSkipped = userAns === null;
+        const status = isSkipped ? "skipped" : (isCorrect ? "correct" : "wrong");
+
+        if (filterType !== "all" && filterType !== status) return;
+
+        const card = document.createElement("div");
+        card.className = `review-card is-${status}`;
+
+        const statusLabel = isSkipped
+          ? "لم يتم الإجابة عن هذا السؤال"
+          : (isCorrect ? "إجابة صحيحة ✓" : "إجابة خاطئة ✕");
+
+        let optionsHtml = "";
+        q.options.forEach((opt, i) => {
+          let cls = "rev-opt";
+          let badge = "";
+          if (opt === q.answer) {
+            cls += " right-ans";
+            badge = "<span>الإجابة الصحيحة ✓</span>";
+          } else if (opt === userAns && !isCorrect) {
+            cls += " user-wrong";
+            badge = "<span>إجابتك ✕</span>";
+          }
+
+          optionsHtml += `
+            <div class="${cls}">
+              <span dir="ltr"><strong>${LETTERS[i]}.</strong> ${opt}</span>
+              ${badge}
+            </div>
+          `;
+        });
+
+        card.innerHTML = `
+          <div class="review-status">${statusLabel}</div>
+          <div class="q-body" style="margin-bottom: 12px;">
+            <div class="q-text" style="font-size: 1.1rem;"><strong>السؤال ${q.displayNum}:</strong> ${q.text}</div>
+            ${q.hasImage ? `<div class="q-image">${GRAPH_SVG}</div>` : ""}
+          </div>
+          <div class="review-options">${optionsHtml}</div>
+        `;
+        list.appendChild(card);
+      });
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        MathJax.typesetPromise();
+      }
+    }
+
+    function restartQuiz() {
+      initQuiz();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // بدء الاختبار تلقائيًا عند فتح الصفحة
+    window.addEventListener("DOMContentLoaded", initQuiz);
+  </script>
+</body>
+</html>
